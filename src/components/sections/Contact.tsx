@@ -87,13 +87,12 @@ export default function Contact() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="full_name" className="block text-sm font-medium text-gray-400 mb-2 font-mono">
-                                        Name *
+                                        Name
                                     </label>
                                     <input
                                         type="text"
                                         id="full_name"
                                         name="full_name"
-                                        required
                                         value={formData.full_name}
                                         onChange={handleChange}
                                         className={inputClasses}
@@ -152,13 +151,12 @@ export default function Contact() {
 
                             <div>
                                 <label htmlFor="subject" className="block text-sm font-medium text-gray-400 mb-2 font-mono">
-                                    Subject *
+                                    Subject
                                 </label>
                                 <input
                                     type="text"
                                     id="subject"
                                     name="subject"
-                                    required
                                     value={formData.subject}
                                     onChange={handleChange}
                                     className={inputClasses}
@@ -185,12 +183,11 @@ export default function Contact() {
 
                             <div>
                                 <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2 font-mono">
-                                    Message *
+                                    Message
                                 </label>
                                 <textarea
                                     id="message"
                                     name="message"
-                                    required
                                     rows={5}
                                     value={formData.message}
                                     onChange={handleChange}
