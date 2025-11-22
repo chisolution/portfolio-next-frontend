@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Github, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Github, ArrowRight, Code } from "lucide-react";
 import { Project } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -25,13 +25,19 @@ export default function ProjectCard({ project, className }: ProjectCardProps) {
                         src={project.project_image}
                         alt={project.title}
                         fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                            // Fallback to placeholder if image fails
+                            e.currentTarget.src = "https://placehold.co/600x400/000000/00ff9d?text=Project";
+                        }}
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center text-gray-600 font-mono text-sm border-b border-white/5">
-                        [NO_IMAGE_DATA]
+                    <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                        <Code className="h-12 w-12 text-gray-700" />
                     </div>
                 )}
+
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
             </div>
 
