@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build"
-  publish = ".netlify/output/public"
+  publish = "out"
+  command = "npm run build && next export"
 
 [[redirects]]
   from = "/*"
