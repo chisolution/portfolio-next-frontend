@@ -30,3 +30,18 @@ export interface ContactForm {
     organization?: string;
     preferred_contact_method?: string;
 }
+
+export interface Experience {
+    id: string;
+    company: string;
+    position: string;
+    location?: string;
+    start_date: string;
+    end_date?: string;
+    description: string;
+    technologies: string[];
+    achievements: string[];
+    is_current: boolean;
+    display_order: number;
+    duration: string;
+}
