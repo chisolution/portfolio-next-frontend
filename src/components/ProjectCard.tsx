@@ -75,28 +75,54 @@ export default function ProjectCard({ project, className }: ProjectCardProps) {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                        <span
-                            key={tech}
-                            className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-neon-green bg-neon-green/10 border border-neon-green/20 font-mono"
-                        >
-                            {tech}
-                        </span>
-                    ))}
-                    {project.technologies.length > 3 && (
-                        <span className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-gray-400 bg-white/5 border border-white/10 font-mono">
-                            +{project.technologies.length - 3}
-                        </span>
-                    )}
+                    {(() => {
+                        // Ensure technologies is an array
+                        let techs: string[] = [];
+                        if (Array.isArray(project.technologies)) {
+                            techs = project.technologies;
+                        } else if (typeof project.technologies === 'string') {
+                            try {
+                                // Try to parse if it's a JSON string
+                                const parsed = JSON.parse(project.technologies);
+                                if (Array.isArray(parsed)) techs = parsed;
+                                else techs = [project.technologies];
+                            } catch {
+                                // If parse fails, treat as comma-separated or single string
+                                techs = (project.technologies as string).split(',').map(t => t.trim());
+                            }
+                        }
+
+                        return (
+                            <>
+                                {techs.slice(0, 3).map((tech) => (
+                                    <span
+                                        key={tech}
+                                        className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-neon-green bg-neon-green/10 border border-neon-green/20 font-mono"
+                                    >
+                                        {tech}
+                                    </span>
+                                ))}
+                                {techs.length > 3 && (
+                                    <span className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-gray-400 bg-white/5 border border-white/10 font-mono">
+                                        +{techs.length - 3}
+                                    </span>
+                                )}
+                            </>
+                        );
+                    })()}
                 </div>
 
-                <Link
-                    href={`/projects/${project.project_slug}`}
-                    className="inline-flex items-center text-sm font-bold text-white hover:text-neon-green transition-colors group/link"
-                >
-                    View Case Study
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/link:translate-x-1" />
-                </Link>
+                {project.project_slug ? (
+                    <Link
+                        href={`/projects/${project.project_slug}`}
+                        className="inline-flex items-center text-sm font-bold text-white hover:text-neon-green transition-colors group/link"
+                    >
+                        View Case Study
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                    </Link>
+                ) : (
+                    <span className="text-sm text-gray-500">Case study coming soon</span>
+                )}
             </div>
         </motion.div>
     );

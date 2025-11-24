@@ -7,25 +7,25 @@ const skills = [
     {
         name: "Frontend Engineering",
         icon: Layout,
-        description: "React, Next.js, Tailwind CSS, Framer Motion",
+        description: "HTML, CSS, JS, Next.js, Tailwind CSS, VueJS, Boostrap",
         color: "text-blue-400",
     },
     {
         name: "Backend Architecture",
         icon: Server,
-        description: "Django, Python, Node.js, PostgreSQL",
+        description: "Django, Python, PHP, Laravel, C#, PostgreSQL, MySQL, SSMS",
         color: "text-green-400",
     },
     {
-        name: "Data Science",
+        name: "Data Analytics",
         icon: Database,
-        description: "Pandas, NumPy, SQL, Data Visualization",
+        description: "Excel, SQL, Power BI",
         color: "text-purple-400",
     },
     {
         name: "System Design",
         icon: Cpu,
-        description: "Microservices, API Design, Scalability",
+        description: "Microservices, API Design, Scalability, Security",
         color: "text-orange-400",
     },
 ];

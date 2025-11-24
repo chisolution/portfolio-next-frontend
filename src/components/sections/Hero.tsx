@@ -52,7 +52,7 @@ export default function Hero() {
                 >
                     <div className="inline-flex items-center px-3 py-1 rounded-full border border-neon-green/30 bg-neon-green/10 text-neon-green text-sm font-mono mb-8 backdrop-blur-sm">
                         <Terminal size={14} className="mr-2" />
-                        <span>System Online</span>
+                        <span>Yes, I am available</span>
                     </div>
 
                     <h1 className="text-5xl sm:text-7xl font-bold text-white tracking-tight mb-6 font-sans">
