@@ -122,42 +122,76 @@ export default function ExperienceSection() {
                                         </p>
 
                                         {/* Technologies */}
-                                        {exp.technologies && exp.technologies.length > 0 && (
-                                            <div className="mb-4">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Code className="h-4 w-4 text-neon-green" />
-                                                    <span className="text-sm font-medium text-gray-400 font-mono">Technologies</span>
+                                        {(() => {
+                                            let techs: string[] = [];
+                                            if (Array.isArray(exp.technologies)) {
+                                                techs = exp.technologies;
+                                            } else if (typeof exp.technologies === 'string') {
+                                                try {
+                                                    const parsed = JSON.parse(exp.technologies);
+                                                    if (Array.isArray(parsed)) techs = parsed;
+                                                    else techs = [exp.technologies];
+                                                } catch {
+                                                    techs = (exp.technologies as string).split(',').map(t => t.trim());
+                                                }
+                                            }
+
+                                            if (techs.length === 0) return null;
+
+                                            return (
+                                                <div className="mb-4">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <Code className="h-4 w-4 text-neon-green" />
+                                                        <span className="text-sm font-medium text-gray-400 font-mono">Technologies</span>
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {techs.map((tech, i) => (
+                                                            <span
+                                                                key={i}
+                                                                className="px-3 py-1 text-xs font-medium text-neon-green bg-neon-green/10 border border-neon-green/20 rounded-full font-mono"
+                                                            >
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {exp.technologies.map((tech, i) => (
-                                                        <span
-                                                            key={i}
-                                                            className="px-3 py-1 text-xs font-medium text-neon-green bg-neon-green/10 border border-neon-green/20 rounded-full font-mono"
-                                                        >
-                                                            {tech}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
+                                            );
+                                        })()}
 
                                         {/* Achievements */}
-                                        {exp.achievements && exp.achievements.length > 0 && (
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Award className="h-4 w-4 text-neon-green" />
-                                                    <span className="text-sm font-medium text-gray-400 font-mono">Key Achievements</span>
+                                        {(() => {
+                                            let achievements: string[] = [];
+                                            if (Array.isArray(exp.achievements)) {
+                                                achievements = exp.achievements;
+                                            } else if (typeof exp.achievements === 'string') {
+                                                try {
+                                                    const parsed = JSON.parse(exp.achievements);
+                                                    if (Array.isArray(parsed)) achievements = parsed;
+                                                    else achievements = [exp.achievements];
+                                                } catch {
+                                                    achievements = (exp.achievements as string).split('\n').map(t => t.trim()).filter(Boolean);
+                                                }
+                                            }
+
+                                            if (achievements.length === 0) return null;
+
+                                            return (
+                                                <div>
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <Award className="h-4 w-4 text-neon-green" />
+                                                        <span className="text-sm font-medium text-gray-400 font-mono">Key Achievements</span>
+                                                    </div>
+                                                    <ul className="space-y-2">
+                                                        {achievements.map((achievement, i) => (
+                                                            <li key={i} className="flex items-start gap-2 text-gray-300 text-sm">
+                                                                <span className="text-neon-green mt-1">▹</span>
+                                                                <span>{achievement}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
                                                 </div>
-                                                <ul className="space-y-2">
-                                                    {exp.achievements.map((achievement, i) => (
-                                                        <li key={i} className="flex items-start gap-2 text-gray-300 text-sm">
-                                                            <span className="text-neon-green mt-1">▹</span>
-                                                            <span>{achievement}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        )}
+                                            );
+                                        })()}
                                     </motion.div>
                                 </div>
 

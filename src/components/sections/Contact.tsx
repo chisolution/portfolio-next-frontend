@@ -16,6 +16,7 @@ export default function Contact() {
         message: "",
         preferred_contact_method: "email",
     });
+    const [file, setFile] = useState<File | null>(null);
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -23,11 +24,44 @@ export default function Contact() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus("submitting");
+        setErrorMessage("");
+
         try {
-            await api.post("/contact/", formData);
+            const data = new FormData();
+
+            // Required field
+            data.append("email", formData.email);
+
+            // Optional fields with defaults (Frontend "Dummy/Static" values)
+            data.append("full_name", formData.full_name.trim() || "Not Provided");
+            data.append("subject", formData.subject.trim() || "General Inquiry");
+            data.append("message", formData.message.trim() || "No message provided");
+
+            // Optional fields - send empty or specific placeholder if not provided
+            data.append("phone_number", formData.phone_number.trim() || "");
+            data.append("organization", formData.organization.trim() || "");
+            data.append("preferred_contact_method", formData.preferred_contact_method || "email");
+
+            // File attachment
+            if (file) {
+                data.append("file_attached", file);
+            }
+
+            await api.post("/contact/", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
             setStatus("success");
             setFormData({
                 full_name: "",
@@ -38,9 +72,24 @@ export default function Contact() {
                 message: "",
                 preferred_contact_method: "email",
             });
-        } catch (error) {
+            setFile(null);
+        } catch (error: any) {
             setStatus("error");
-            setErrorMessage("Something went wrong. Please try again later.");
+            // Try to get a more specific error message from the backend
+            const serverError = error.response?.data;
+            let message = "Something went wrong. Please try again later.";
+
+            if (serverError) {
+                if (typeof serverError === 'string') {
+                    message = serverError;
+                } else if (typeof serverError === 'object') {
+                    // Join all error messages
+                    const messages = Object.values(serverError).flat().join(', ');
+                    if (messages) message = messages;
+                }
+            }
+
+            setErrorMessage(message);
             console.error("Contact form error:", error);
         }
     };
@@ -96,7 +145,7 @@ export default function Contact() {
                                         value={formData.full_name}
                                         onChange={handleChange}
                                         className={inputClasses}
-                                        placeholder="John Doe"
+                                        placeholder="Your Name..."
                                     />
                                 </div>
                                 <div>
@@ -111,7 +160,7 @@ export default function Contact() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         className={inputClasses}
-                                        placeholder="john@example.com"
+                                        placeholder="Your email address..."
                                     />
                                 </div>
                             </div>
@@ -120,7 +169,7 @@ export default function Contact() {
                                 <div>
                                     <label htmlFor="phone_number" className="block text-sm font-medium text-gray-400 mb-2 font-mono">
                                         <Phone className="inline h-3.5 w-3.5 mr-1" />
-                                        Phone Number
+                                        Contact Number
                                     </label>
                                     <input
                                         type="tel"
@@ -129,7 +178,7 @@ export default function Contact() {
                                         value={formData.phone_number}
                                         onChange={handleChange}
                                         className={inputClasses}
-                                        placeholder="+1 (555) 123-4567"
+                                        placeholder="e.g. +27xxxxxx"
                                     />
                                 </div>
                                 <div>
@@ -144,7 +193,7 @@ export default function Contact() {
                                         value={formData.organization}
                                         onChange={handleChange}
                                         className={inputClasses}
-                                        placeholder="Company Name"
+                                        placeholder="Your Company Name or Org..."
                                     />
                                 </div>
                             </div>
@@ -160,7 +209,7 @@ export default function Contact() {
                                     value={formData.subject}
                                     onChange={handleChange}
                                     className={inputClasses}
-                                    placeholder="Project Inquiry"
+                                    placeholder="Summary of Inquiry..."
                                 />
                             </div>
 
@@ -194,6 +243,29 @@ export default function Contact() {
                                     className={cn(inputClasses, "resize-none")}
                                     placeholder="Tell me about your project..."
                                 />
+                            </div>
+
+                            <div>
+                                <label htmlFor="file_attached" className="block text-sm font-medium text-gray-400 mb-2 font-mono">
+                                    Attachment (Optional)
+                                </label>
+                                <input
+                                    type="file"
+                                    id="file_attached"
+                                    name="file_attached"
+                                    onChange={handleFileChange}
+                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                    className="block w-full text-sm text-gray-400
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-neon-green/10 file:text-neon-green
+                                    hover:file:bg-neon-green/20
+                                    cursor-pointer"
+                                />
+                                <p className="mt-1 text-xs text-gray-500">
+                                    Supported: PDF, DOC, DOCX, JPG, PNG
+                                </p>
                             </div>
 
                             {status === "error" && (
