@@ -45,3 +45,30 @@ export interface Experience {
     display_order: number;
     duration: string;
 }
+
+export interface Certification {
+    id: string;
+    name: string;
+    issuing_organization: string;
+    issue_date: string;
+    expiry_date?: string;
+    credential_id?: string;
+    credential_url?: string;
+    description?: string;
+    skills: string[];
+    display_order: number;
+    is_expired: boolean;
+}
+
+export interface Workshop {
+    id: string;
+    title: string;
+    organizer: string;
+    date: string;
+    duration_hours?: number;
+    location?: string;
+    description: string;
+    topics: string[];
+    certificate_url?: string;
+    display_order: number;
+}
