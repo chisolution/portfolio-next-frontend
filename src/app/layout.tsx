@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import FloatingCVButton from "@/components/FloatingCVButton";
@@ -44,12 +44,6 @@ export const metadata: Metadata = {
     description: "Full-stack software developer specializing in modern web technologies.",
     images: ["/images/og/default.png"]
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5
-  },
-  themeColor: "#00ff9d",
   robots: {
     index: true,
     follow: true,
@@ -61,6 +55,13 @@ export const metadata: Metadata = {
       "max-snippet": -1
     }
   }
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#00ff9d",
 };
 
 export default function RootLayout({
