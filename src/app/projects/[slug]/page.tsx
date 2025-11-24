@@ -20,7 +20,7 @@ export default function ProjectDetail() {
             if (!slug) return;
             try {
                 const response = await api.get(`/projects/slug/${slug}/`);
-                setProject(response.data);
+                setProject(response.data.data);
             } catch (error) {
                 console.error("Error fetching project:", error);
             } finally {
@@ -82,6 +82,10 @@ export default function ProjectDetail() {
                                 {new Date(project.created_at).toLocaleDateString()}
                             </span>
                         )}
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/5 text-gray-300 border border-white/10 text-sm font-medium font-mono">
+                            <span className="mr-2">👁️</span>
+                            {project.view_count || 0} Views
+                        </span>
                     </div>
 
                     <div className="flex gap-4">
