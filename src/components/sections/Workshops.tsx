@@ -6,7 +6,7 @@ import { GraduationCap, ExternalLink, Calendar, MapPin, Clock } from 'lucide-rea
 import axios from 'axios';
 import { Workshop } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://portfolio-django-backend.onrender.com';
 
 export default function WorkshopsSection() {
     const [workshops, setWorkshops] = useState<Workshop[]>([]);

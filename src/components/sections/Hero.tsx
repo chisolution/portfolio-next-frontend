@@ -56,7 +56,7 @@ export default function Hero() {
                     </div>
 
                     <h1 className="text-5xl sm:text-7xl font-bold text-white tracking-tight mb-6 font-sans">
-                        Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-deep-green">Delan</span>
+                        Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-deep-green">Dilane M.</span>
                     </h1>
 
                     <div className="h-16 sm:h-20 text-2xl sm:text-4xl text-gray-400 mb-10 font-mono">

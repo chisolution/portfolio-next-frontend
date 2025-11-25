@@ -53,7 +53,7 @@ export default function About() {
                                     I operate at the intersection of <span className="text-white font-semibold">software engineering</span> and <span className="text-white font-semibold">data analysis</span>. My mission is to build digital systems that are not only robust and scalable but also provide intuitive, high-performance user experiences.
                                 </p>
                                 <p className="mb-6 leading-relaxed">
-                                    With a rigorous academic background in Computer Science, I approach development with an engineering mindset—prioritizing efficiency, maintainability, and data-driven decision making.
+                                    With a rigorous academic background in Information Systems, I approach development with an engineering mindset—prioritizing efficiency, security, maintainability, and data-driven decision making.
                                 </p>
                                 <p className="leading-relaxed">
                                     I am currently seeking a role where I can leverage my full-stack capabilities to solve complex problems and drive innovation.

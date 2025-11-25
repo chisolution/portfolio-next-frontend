@@ -19,7 +19,7 @@ export default function SEO({
     ogType = "website",
     canonicalUrl,
     structuredData,
-    author = "Your Name"
+    author = "Muluh Dilane"
 }: SEOProps) {
     const siteUrl = "https://portfolio-mct.netlify.app";
     const fullTitle = title.includes("|") ? title : `${title} | Portfolio`;

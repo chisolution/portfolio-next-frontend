@@ -6,7 +6,7 @@ import { Award, ExternalLink, Calendar, Building2 } from 'lucide-react';
 import axios from 'axios';
 import { Certification } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://portfolio-django-backend.onrender.com';
 
 export default function CertificationsSection() {
     const [certifications, setCertifications] = useState<Certification[]>([]);
