@@ -15,6 +15,7 @@ export interface Project {
     github_url?: string;
     display_order: number;
     is_featured: boolean;
+    is_published: boolean;
     project_image?: string;
     gallery_images?: string[];
     project_slug: string;
@@ -71,4 +72,46 @@ export interface Workshop {
     topics: string[];
     certificate_url?: string;
     display_order: number;
+}
+
+// Authentication Types
+export interface User {
+    id: string;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    is_active: boolean;
+    is_staff: boolean;
+    date_joined: string;
+}
+
+export interface LoginCredentials {
+    username: string;
+    password: string;
+}
+
+export interface AuthResponse {
+    message: string;
+    data: {
+        id: string;
+        username: string;
+        email: string;
+        first_name: string;
+        last_name: string;
+        is_active: boolean;
+        is_staff: boolean;
+        date_joined: string;
+        access: string;
+        refresh: string;
+    };
+    status_code: number;
+}
+
+export interface AuthState {
+    user: User | null;
+    accessToken: string | null;
+    refreshToken: string | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
 }

@@ -40,6 +40,8 @@ export default function Navbar() {
                 <div className="flex items-center justify-between">
                     <div className="flex-shrink-0">
                         <Link href="/" className="font-bold text-xl tracking-tighter text-white">
+                            <span className="text-neon-green">PERSONAL</span>
+                            <br/>
                             PORTFOLIO<span className="text-neon-green">.</span>
                         </Link>
                     </div>
