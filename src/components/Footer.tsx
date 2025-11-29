@@ -47,12 +47,12 @@ export default function Footer() {
                         &copy; {new Date().getFullYear()} Dilane. All rights reserved.
                     </p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
-                        <Link href="#" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
+                        {/* <Link href="#" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
                             Privacy Policy
                         </Link>
                         <Link href="#" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
                             Terms of Service
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
