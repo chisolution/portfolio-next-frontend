@@ -57,6 +57,11 @@ export default function ProjectsPage() {
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto">
                         Explore my complete portfolio of projects, from web applications to data analysis.
                     </p>
+                    <motion.div className="mt-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
+                        <a href="/contact" className="inline-flex items-center px-6 py-3 bg-neon-green text-black font-bold rounded-lg hover:bg-white transition-all">
+                            Request Backend access
+                        </a>
+                    </motion.div>
                 </div>
 
                 <div className="mb-12 flex flex-col md:flex-row gap-6 items-center justify-between">

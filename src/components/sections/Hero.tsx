@@ -56,11 +56,13 @@ export default function Hero() {
                     </div>
 
                     <h1 className="text-5xl sm:text-7xl font-bold text-white tracking-tight mb-6 font-sans">
-                        Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-deep-green">Delan</span>
+                        Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-deep-green">Dilane M.</span>
+                        <br />
+                        <span className="text-3xl sm:text-5xl text-gray-300">Software Engineer</span>
                     </h1>
 
                     <div className="h-16 sm:h-20 text-2xl sm:text-4xl text-gray-400 mb-10 font-mono">
-                        <TypewriterEffect text="Building the future of digital experiences." />
+                        <TypewriterEffect text="I  build solutions that scale, perform, and make sense." />
                     </div>
 
                     <div className="flex flex-col sm:flex-row justify-center gap-6">

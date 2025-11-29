@@ -8,36 +8,33 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row justify-between items-center mb-12">
                     <div className="mb-8 md:mb-0 text-center md:text-left">
                         <span className="text-2xl font-bold tracking-tighter text-white">
-                            PORTFOLIO<span className="text-neon-green">.</span>
+                            PERSONAL <span className="text-neon-green">PORTFOLIO.</span>
                         </span>
                         <p className="mt-2 text-sm text-gray-500">
-                            Building digital experiences that matter.
+                            Building digital experiences that matter. 
                         </p>
+                        <p className="text-neon-green"> My repositories are 
+                            <span className="text-red-400"> private</span>, 
+                            access is granted on requests </p>
                     </div>
                     <div className="flex space-x-8">
                         <a
-                            href="#"
+                            href="https://github.com/delan75"
                             className="text-gray-400 hover:text-neon-green transition-colors transform hover:scale-110 duration-200"
                         >
                             <span className="sr-only">GitHub</span>
                             <Github className="h-6 w-6" />
                         </a>
                         <a
-                            href="#"
+                            href="https://www.linkedin.com/in/muluh-dilane-thiery/"
                             className="text-gray-400 hover:text-neon-green transition-colors transform hover:scale-110 duration-200"
                         >
                             <span className="sr-only">LinkedIn</span>
                             <Linkedin className="h-6 w-6" />
                         </a>
+                        
                         <a
-                            href="#"
-                            className="text-gray-400 hover:text-neon-green transition-colors transform hover:scale-110 duration-200"
-                        >
-                            <span className="sr-only">Twitter</span>
-                            <Twitter className="h-6 w-6" />
-                        </a>
-                        <a
-                            href="#"
+                            href="mailto: info@chisolution.io"
                             className="text-gray-400 hover:text-neon-green transition-colors transform hover:scale-110 duration-200"
                         >
                             <span className="sr-only">Email</span>
@@ -47,15 +44,15 @@ export default function Footer() {
                 </div>
                 <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-sm text-gray-600">
-                        &copy; {new Date().getFullYear()} Delan. All rights reserved.
+                        &copy; {new Date().getFullYear()} Dilane. All rights reserved.
                     </p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
-                        <Link href="#" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
+                        {/* <Link href="#" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
                             Privacy Policy
                         </Link>
                         <Link href="#" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
                             Terms of Service
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
