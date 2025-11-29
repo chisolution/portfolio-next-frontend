@@ -13,7 +13,7 @@ interface SEOProps {
 
 export default function SEO({
     title = "Portfolio | Software Developer",
-    description = "Full-stack software developer specializing in modern web technologies. View my projects, experience, and get in touch.",
+    description = "Full scale software solutions specializing in modern web technologies. View my projects, experience, and get in touch.",
     keywords = ["software developer", "web development", "full-stack", "portfolio", "react", "next.js", "django", "python"],
     ogImage = "/images/og/default.png",
     ogType = "website",

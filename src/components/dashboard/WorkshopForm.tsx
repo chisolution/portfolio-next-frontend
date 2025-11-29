@@ -5,18 +5,13 @@ import { motion } from 'framer-motion';
 import { X, Loader2, Plus, Trash2 } from 'lucide-react';
 import api from '@/lib/api';
 import { Workshop } from '@/types';
+import { formatDateForInput, formatDateForAPI } from '@/lib/dateUtils';
 
 interface WorkshopFormProps {
     workshop?: Workshop | null;
     onClose: () => void;
     onSuccess: () => void;
 }
-
-// Helper to format date for HTML date input (YYYY-MM-DD)
-const formatDateForInput = (dateString: string | undefined) => {
-    if (!dateString) return '';
-    return dateString.split('T')[0];
-};
 
 export default function WorkshopForm({ workshop, onClose, onSuccess }: WorkshopFormProps) {
     const [loading, setLoading] = useState(false);
@@ -68,10 +63,16 @@ export default function WorkshopForm({ workshop, onClose, onSuccess }: WorkshopF
         setLoading(true);
 
         try {
+            // Format date before sending to API
+            const dataToSubmit = {
+                ...formData,
+                date: formatDateForAPI(formData.date),
+            };
+
             if (workshop) {
-                await api.patch(`/workshops/${workshop.id}/`, formData);
+                await api.patch(`/workshops/${workshop.id}/`, dataToSubmit);
             } else {
-                await api.post('/workshops/', formData);
+                await api.post('/workshops/', dataToSubmit);
             }
             onSuccess();
             onClose();

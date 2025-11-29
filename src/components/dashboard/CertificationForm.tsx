@@ -5,18 +5,13 @@ import { motion } from 'framer-motion';
 import { X, Loader2, Plus, Trash2 } from 'lucide-react';
 import api from '@/lib/api';
 import { Certification } from '@/types';
+import { formatDateForInput, formatDateForAPI } from '@/lib/dateUtils';
 
 interface CertificationFormProps {
     certification?: Certification | null;
     onClose: () => void;
     onSuccess: () => void;
 }
-
-// Helper to format date for HTML date input (YYYY-MM-DD)
-const formatDateForInput = (dateString: string | undefined) => {
-    if (!dateString) return '';
-    return dateString.split('T')[0];
-};
 
 export default function CertificationForm({ certification, onClose, onSuccess }: CertificationFormProps) {
     const [loading, setLoading] = useState(false);
@@ -68,10 +63,17 @@ export default function CertificationForm({ certification, onClose, onSuccess }:
         setLoading(true);
 
         try {
+            // Format dates before sending to API
+            const dataToSubmit = {
+                ...formData,
+                issue_date: formatDateForAPI(formData.issue_date),
+                expiry_date: formData.expiry_date ? formatDateForAPI(formData.expiry_date) : null,
+            };
+
             if (certification) {
-                await api.patch(`/certifications/${certification.id}/`, formData);
+                await api.patch(`/certifications/${certification.id}/`, dataToSubmit);
             } else {
-                await api.post('/certifications/', formData);
+                await api.post('/certifications/', dataToSubmit);
             }
             onSuccess();
             onClose();

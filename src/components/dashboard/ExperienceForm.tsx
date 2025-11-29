@@ -5,18 +5,13 @@ import { motion } from 'framer-motion';
 import { X, Loader2, Plus, Trash2 } from 'lucide-react';
 import api from '@/lib/api';
 import { Experience } from '@/types';
+import { formatDateForInput, formatDateForAPI } from '@/lib/dateUtils';
 
 interface ExperienceFormProps {
     experience?: Experience | null;
     onClose: () => void;
     onSuccess: () => void;
 }
-
-// Helper to format date for HTML date input (YYYY-MM-DD)
-const formatDateForInput = (dateString: string | undefined) => {
-    if (!dateString) return '';
-    return dateString.split('T')[0];
-};
 
 export default function ExperienceForm({ experience, onClose, onSuccess }: ExperienceFormProps) {
     const [loading, setLoading] = useState(false);
@@ -87,10 +82,17 @@ export default function ExperienceForm({ experience, onClose, onSuccess }: Exper
         setLoading(true);
 
         try {
+            // Format dates before sending to API
+            const dataToSubmit = {
+                ...formData,
+                start_date: formatDateForAPI(formData.start_date),
+                end_date: formData.end_date ? formatDateForAPI(formData.end_date) : null,
+            };
+
             if (experience) {
-                await api.patch(`/experience/${experience.id}/`, formData);
+                await api.patch(`/experience/${experience.id}/`, dataToSubmit);
             } else {
-                await api.post('/experience/', formData);
+                await api.post('/experience/', dataToSubmit);
             }
             onSuccess();
             onClose();

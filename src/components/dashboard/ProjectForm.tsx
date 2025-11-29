@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Loader2, Plus, Trash2 } from 'lucide-react';
+import { X, Loader2, Plus, Trash2, Image as ImageIcon, Upload } from 'lucide-react';
 import api from '@/lib/api';
 import { Project } from '@/types';
+import { generateSlug, validateImageFile, fileToBase64 } from '@/lib/fileUpload';
 
 interface ProjectFormProps {
     project?: Project | null;
@@ -34,10 +35,30 @@ export default function ProjectForm({ project, onClose, onSuccess }: ProjectForm
     });
     const [techInput, setTechInput] = useState('');
     const [galleryInput, setGalleryInput] = useState('');
+    const [slugManuallyEdited, setSlugManuallyEdited] = useState(!!project?.project_slug);
+    const [projectImageFile, setProjectImageFile] = useState<File | null>(null);
+    const [projectImagePreview, setProjectImagePreview] = useState<string>(project?.project_image || '');
+    const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+    const [galleryPreviews, setGalleryPreviews] = useState<string[]>(project?.gallery_images || []);
+    const projectImageInputRef = useRef<HTMLInputElement>(null);
+    const galleryImageInputRef = useRef<HTMLInputElement>(null);
+
+    // Auto-generate slug from title
+    useEffect(() => {
+        if (!slugManuallyEdited && formData.title) {
+            const newSlug = generateSlug(formData.title);
+            setFormData(prev => ({ ...prev, project_slug: newSlug }));
+        }
+    }, [formData.title, slugManuallyEdited]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
+
+        // Track if slug is manually edited
+        if (name === 'project_slug') {
+            setSlugManuallyEdited(true);
+        }
 
         setFormData(prev => ({
             ...prev,
@@ -79,18 +100,128 @@ export default function ProjectForm({ project, onClose, onSuccess }: ProjectForm
         }));
     };
 
+    // Handle project image file upload
+    const handleProjectImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const validation = validateImageFile(file);
+        if (!validation.valid) {
+            setError(validation.error || 'Invalid file');
+            return;
+        }
+
+        setProjectImageFile(file);
+        const preview = await fileToBase64(file);
+        setProjectImagePreview(preview);
+        setError('');
+    };
+
+    // Handle gallery image file upload
+    const handleGalleryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        const validFiles: File[] = [];
+        const newPreviews: string[] = [];
+
+        for (const file of files) {
+            const validation = validateImageFile(file);
+            if (validation.valid) {
+                validFiles.push(file);
+                const preview = await fileToBase64(file);
+                newPreviews.push(preview);
+            } else {
+                setError(validation.error || 'Invalid file');
+                return;
+            }
+        }
+
+        setGalleryFiles(prev => [...prev, ...validFiles]);
+        setGalleryPreviews(prev => [...prev, ...newPreviews]);
+        setError('');
+
+        // Reset input
+        if (galleryImageInputRef.current) {
+            galleryImageInputRef.current.value = '';
+        }
+    };
+
+    // Remove gallery image by index
+    const removeGalleryImageByIndex = (index: number) => {
+        // Check if this is a new file or existing URL
+        if (index < galleryFiles.length) {
+            // Remove from new files
+            setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+            setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+        } else {
+            // Remove from existing gallery images
+            const existingIndex = index - galleryFiles.length;
+            setFormData(prev => ({
+                ...prev,
+                gallery_images: prev.gallery_images.filter((_, i) => i !== existingIndex)
+            }));
+            setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+        }
+    };
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
+            // Create FormData for file upload
+            const submitData = new FormData();
+
+            // Add text fields
+            submitData.append('title', formData.title);
+            submitData.append('description', formData.description);
+            submitData.append('problem', formData.problem);
+            submitData.append('process', formData.process);
+            submitData.append('impact', formData.impact);
+            submitData.append('results', formData.results);
+            submitData.append('project_slug', formData.project_slug);
+            submitData.append('live_demo_url', formData.live_demo_url);
+            submitData.append('github_url', formData.github_url);
+            submitData.append('display_order', formData.display_order.toString());
+            submitData.append('is_published', formData.is_published.toString());
+            submitData.append('is_featured', formData.is_featured.toString());
+
+            // Add technologies as JSON array
+            submitData.append('technologies', JSON.stringify(formData.technologies));
+
+            // Add project image file if selected
+            if (projectImageFile) {
+                submitData.append('project_image', projectImageFile);
+            } else if (formData.project_image && !projectImageFile) {
+                // Keep existing image URL if no new file selected
+                submitData.append('project_image', formData.project_image);
+            }
+
+            // Add gallery image files
+            if (galleryFiles.length > 0) {
+                galleryFiles.forEach((file, index) => {
+                    submitData.append(`gallery_image_files`, file);
+                });
+            }
+            // Note: Existing gallery images are preserved automatically by the backend
+
+
             if (project) {
                 // Update existing project
-                await api.patch(`/projects/${project.id}/`, formData);
+                await api.patch(`/projects/${project.id}/`, submitData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
             } else {
                 // Create new project
-                await api.post('/projects/', formData);
+                await api.post('/projects/', submitData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
             }
             onSuccess();
             onClose();
@@ -298,28 +429,48 @@ export default function ProjectForm({ project, onClose, onSuccess }: ProjectForm
                     {/* Project Image */}
                     <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Project Image URL
+                            Project Image
                         </label>
-                        <input
-                            type="url"
-                            name="project_image"
-                            value={formData.project_image}
-                            onChange={handleChange}
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-green/50"
-                            placeholder="https://example.com/image.jpg"
-                        />
-                        {formData.project_image && (
-                            <div className="mt-2">
-                                <img
-                                    src={formData.project_image}
-                                    alt="Project preview"
-                                    className="w-full h-48 object-cover rounded-lg border border-white/10"
-                                    onError={(e) => {
-                                        (e.target as HTMLImageElement).style.display = 'none';
-                                    }}
-                                />
-                            </div>
-                        )}
+                        <div className="space-y-3">
+                            <input
+                                ref={projectImageInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleProjectImageChange}
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => projectImageInputRef.current?.click()}
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:bg-white/10 hover:border-neon-green/30 transition-all flex items-center justify-center gap-2"
+                            >
+                                <Upload className="w-5 h-5" />
+                                <span>Choose Project Image</span>
+                            </button>
+                            {projectImagePreview && (
+                                <div className="relative group">
+                                    <img
+                                        src={projectImagePreview}
+                                        alt="Project preview"
+                                        className="w-full h-48 object-cover rounded-lg border border-white/10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setProjectImageFile(null);
+                                            setProjectImagePreview('');
+                                            setFormData(prev => ({ ...prev, project_image: '' }));
+                                            if (projectImageInputRef.current) {
+                                                projectImageInputRef.current.value = '';
+                                            }
+                                        }}
+                                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Gallery Images */}
@@ -327,46 +478,44 @@ export default function ProjectForm({ project, onClose, onSuccess }: ProjectForm
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                             Gallery Images
                         </label>
-                        <div className="flex gap-2 mb-2">
+                        <div className="space-y-3">
                             <input
-                                type="url"
-                                value={galleryInput}
-                                onChange={(e) => setGalleryInput(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addGalleryImage())}
-                                className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-green/50"
-                                placeholder="Add gallery image URL"
+                                ref={galleryImageInputRef}
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleGalleryImageChange}
+                                className="hidden"
                             />
                             <button
                                 type="button"
-                                onClick={addGalleryImage}
-                                className="px-4 py-2 bg-neon-green/10 border border-neon-green/20 text-neon-green rounded-lg hover:bg-neon-green/20 transition-all"
+                                onClick={() => galleryImageInputRef.current?.click()}
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:bg-white/10 hover:border-neon-green/30 transition-all flex items-center justify-center gap-2"
                             >
-                                <Plus className="w-5 h-5" />
+                                <ImageIcon className="w-5 h-5" />
+                                <span>Add Gallery Images</span>
                             </button>
+                            {galleryPreviews.length > 0 && (
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {galleryPreviews.map((preview, idx) => (
+                                        <div key={idx} className="relative group">
+                                            <img
+                                                src={preview}
+                                                alt={`Gallery ${idx + 1}`}
+                                                className="w-full h-32 object-cover rounded-lg border border-white/10"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeGalleryImageByIndex(idx)}
+                                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <Trash2 className="w-3 h-3" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                        {formData.gallery_images.length > 0 && (
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                                {formData.gallery_images.map((url, idx) => (
-                                    <div key={idx} className="relative group">
-                                        <img
-                                            src={url}
-                                            alt={`Gallery ${idx + 1}`}
-                                            className="w-full h-32 object-cover rounded-lg border border-white/10"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = '/images/placeholder.svg';
-                                            }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeGalleryImage(url)}
-                                            className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                            <Trash2 className="w-3 h-3" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
 
                     {/* URLs */}

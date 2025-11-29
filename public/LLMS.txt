@@ -1,0 +1,20 @@
+# Portfolio | Software Developer
+
+Full-stack software developer specializing in modern web technologies. Explore my projects, experience, and technical expertise.
+
+## Personal Links
+
+- [PERSONALPORTFOLIO](https://portfolio-mct.netlify.app/): A comprehensive overview of my skills, projects, and professional journey as a software developer.
+- [Projects](https://portfolio-mct.netlify.app/projects): A detailed showcase of my work, including various applications and systems I have developed, highlighting the technologies used and the challenges overcome.
+- [About](https://portfolio-mct.netlify.app/about): Information about my background, experience, and the philosophy that drives my work in software development.
+- [Contact](https://portfolio-mct.netlify.app/contact): A page providing various ways to get in touch with me for inquiries, collaborations, or networking opportunities.
+
+## Social Media
+
+- [GitHub](https://github.com/delan75): My GitHub profile where you can find my open-source projects, contributions, and repositories showcasing my coding skills and collaborative work.
+- [LinkedIn](https://www.linkedin.com/in/muluh-dilane-thiery/): My LinkedIn profile that outlines my professional experience, connections, and endorsements from colleagues and peers in the tech industry.
+- [Email](mailto: info@chisolution.io): Direct email contact for professional inquiries or discussions regarding potential projects and collaborations.
+
+## Legal Information
+
+- [Privacy Policy](https://portfolio-mct.netlify.app/#): A document outlining how I handle personal data and privacy concerns related to my portfolio and online presence.
